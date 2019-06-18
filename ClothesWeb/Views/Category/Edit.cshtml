@@ -1,0 +1,77 @@
+﻿@model ClothesEntities.Category
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+<div class="row">
+    <div class="col-6">
+        <form method="post">
+            <input type="text" name="ImageURL" id="ImageURL" hidden />
+
+            <label> Name </label>
+            <input type="text" name="Name" id="Name"value=" @Model.Name" />
+            <br />
+            <label> Description </label>
+            <input type="text" name="Description" id="Description" value=" @Model.Description" />
+            <br />
+            <label> Image </label>
+            <input type="file" name="Image" id="Image" accept=".jpg,.png" />
+            <button type="button" id="save">Edit</button>
+        </form>
+    </div>
+    <div class="col-6">
+        <img id="ImageUploaded" src="@Model.ImageURL"/>
+    </div>
+</div>
+<script>
+     $("#save").click(function () {
+        $.ajax
+            ({
+                type: 'POST',
+                url: '/Category/Edit',
+                data:
+                {
+                    ID : @Model.ID,
+                    Name: $("#Name").val(),
+                    Description: $("#Description").val(),
+                    ImageURL: $("#ImageURL").val(),
+                }
+            })
+            .done(function (response) {
+                $("#createContainer").html("");
+                $("#Container").html(response);
+            })
+            .fail(function () {
+                alert("Fail")
+            });
+    });
+    $("#Image").change(function () {
+        var element = this;
+        var formData = new FormData();
+        var totalFiles = element.files.length;
+        for (var i = 0; i < totalFiles; i++) {
+            var file = element.files[i];
+            formData.append("Photo", file);
+        }
+        $.ajax
+            ({
+                type: 'POST',
+                url: '/Shared/UploadImage',
+                dataType: 'json',
+                data: formData,
+                contentType: false,
+                processData: false
+            })
+            .done(function (response) {
+                console.log(response);
+                if (response.Success)
+                    $("#ImageUploaded").attr("src", response.ImageURL);
+                    $("#ImageURL").val(response.ImageURL);
+            })
+            .fail(function () {
+                alert("Fail")
+            });
+
+    });
+</script>

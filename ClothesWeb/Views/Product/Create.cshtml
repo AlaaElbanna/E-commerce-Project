@@ -1,0 +1,97 @@
+﻿@model List<ClothesEntities.Category>
+<head>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+</head>
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Add Product</h2>
+<div id="CreateProduct">
+    <div class="row">
+        <div class="col-6">
+            <form>
+                <label> Name </label>
+                <input type="text" name="ImageURL" id="ImageURL" hidden />
+                <input type="text" name="Name" id="Name" />
+                <br />
+                <label> Description </label>
+                <input type="text" name="Description" id="Description" />
+                <br />
+                <label> Category </label>
+                <select id="Selected">
+                    @foreach (var item in Model)
+                    {
+                        <option value="@item.ID">@item.Name</option>
+                    }
+                </select><br />
+                <label> Price </label>
+                <input type="text" name="Price" id="Price" />
+                <br />
+                <label> Image </label>
+                <input type="file" name="Image" id="Image" />
+
+                <button type="button" id="save">Save</button>
+            </form>
+        </div>
+        <div class="col-6 thumb">
+            <img style="height:150px;width:150px" id="ImageUploaded" />
+
+        </div>
+      </div>
+ </div>
+<script>
+    $("#Image").change(function () {
+        var element = this;
+        var formData = new FormData();
+        var totalFiles = element.files.length;
+        for (var i = 0; i < totalFiles; i++) {
+            var file = element.files[i];
+            formData.append("Photo", file);
+        }
+        $.ajax
+            ({
+                type: 'POST',
+                url: '/Shared/UploadImage',
+                dataType: 'json',
+                data: formData,
+                contentType: false,
+                processData: false
+            })
+            .done(function (response) {
+                console.log(response);
+                if (response.Success)
+                $("#ImageUploaded").attr("src", response.ImageURL);
+                $("#ImageURL").val(response.ImageURL);
+            })
+            .fail(function () {
+                alert("Fail")
+            });
+
+    });
+    $("#save").click(function () {
+        console.log($(".CatOption").attr("value"));
+        console.log($("#Selected").val());
+        $.ajax
+             ({
+                 type : 'POST',
+                url: '/Product/Create',
+                 data:
+                 {
+                     Name: $("#Name").val(),
+                     Description: $("#Description").val(),
+                     Price: $("#Price").val(),
+                     Cat_Id: $("#Selected").val(),
+                     ImageURL: $("#ImageURL").val()
+                 }
+            })
+            .done(function (response) {
+                $("#createContainer").html("");
+                $("#Container").html(response);
+             })
+            .fail(function () {
+                alert("Fail")
+            });
+    });
+</script>

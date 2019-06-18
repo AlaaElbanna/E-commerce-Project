@@ -1,0 +1,64 @@
+﻿@model List<ClothesEntities.Product> 
+@{
+    ViewBag.Title = "ShowProducts";
+}
+<section class="flat-row row-product-new">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="title-section margin-bottom-52">
+                    <h2 class="title">
+                        New Product
+                    </h2>
+                </div>
+                <div class="product-content product-fourcolumn clearfix">
+                    <ul class="product style2 clearfix">
+                        @foreach (var item in Model)
+                        {
+                            <li class="product-item">
+                                <div class="product-thumb clearfix">
+                                    <a href="#" class="product-thumb">
+                                        <img style="height:300px;padding:2px;padding-bottom:7px;width:100%;background-size:cover" src="@item.ImageURL" alt="image">
+                                    </a>
+                                    <span class="new">New</span>
+                                </div>
+                                <div class="product-info text-center clearfix">
+                                    <span class="product-title">@item.Description</span>
+                                    <div class="price">
+                                        <ins>
+                                            <span class="amount">@item.Price</span>
+                                        </ins>
+                                    </div>
+                                    <ul class="flat-color-list width-14">
+                                        <li>
+                                            <a href="#" class="red"></a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="blue"></a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="black"></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="add-to-cart text-center" data-id="@item.ID">
+                                    <a >ADD TO CART</a>
+                                </div>
+                                <a href="#" class="like"><i class="fa fa-heart-o"></i></a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div><!-- /.row -->
+    </div><!-- /.container -->
+</section>
+<script>
+    var products = [];
+    $(".add-to-cart").click(function () {
+        var Id = $(this).attr('data-id');
+        products.push(Id);
+        $.cookie("Products", products.join('-'), { path: '/' });
+        alert("added");
+    })
+</script>

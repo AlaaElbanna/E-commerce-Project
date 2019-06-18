@@ -1,0 +1,96 @@
+﻿@model List<ClothesEntities.Category>
+
+@{
+    ViewBag.Title = "CategoryTable";
+}
+<h2>CategoryTable</h2>
+<form>
+    <input type="text" id="SearchText" />
+    <button id="SearchBtn" type="button">Search </button>
+</form>
+<br />
+<button id="NewBtn" style="float:right">New </button>
+<div class="table-responsive">
+
+    <table class="table table-striped ">
+        <tr>
+            <td>Name</td>
+            <td>Description</td>
+            <td>Products</td>
+            <td>Actions</td>
+        </tr>
+        @foreach (var Cat in @Model)
+        {
+
+            <tr>
+                <td>@Cat.Name</td>
+                <td>@Cat.Description</td>
+                <td>@Cat.Products.Count</td>
+                <td>
+                    <button class="Edit" data-id="@Cat.ID">Edit</button>
+                    <button class="Delete" data-id="@Cat.ID">Delete</button>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+<script>
+    $("#SearchBtn").click(function () {
+        var Search = $("#SearchText").val()
+
+        $.ajax
+            ({
+                url: '/Category/CategoryTable',
+                data: { Search: Search }
+            })
+            .done(function (response) {
+                $("#Container").html(response)
+            })
+            .fail(function () {
+                alert("Fail")
+            });
+    });
+    $("#NewBtn").click(function () {
+        $.ajax
+            ({
+                url: '/Category/Create',
+            })
+            .done(function (response) {
+                $("#createContainer").html(response)
+            })
+            .fail(function () {
+                alert("Fail")
+            });
+    });
+    $(".Edit").click(function () {
+        $.ajax
+            ({
+                url: '/Category/Edit',
+                data: { ID: $(this).attr('data-id') }
+            })
+            .done(function (response) {
+                $("#createContainer").html(response)
+            })
+            .fail(function () {
+                alert("Fail")
+            });
+    });
+    $(".Delete").click(function () {
+        var confirmMess = confirm("Are You Sure");
+        if (confirmMess == true) {
+            $.ajax
+                ({
+                    type: 'POST',
+                    url: '/Category/Delete',
+                    data: { ID: $(this).attr('data-id') }
+                })
+                .done(function (response) {
+                    $("#Container").html(response)
+                })
+                .fail(function () {
+                    alert("Fail")
+                });
+        }
+    });
+
+</script>

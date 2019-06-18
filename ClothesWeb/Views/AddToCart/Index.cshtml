@@ -1,0 +1,42 @@
+﻿@model List<ClothesEntities.Product>
+    @{
+        ViewBag.Title = "Index";
+    }
+
+    <h2>Index</h2>
+
+    <div class="table-responsive">
+
+        <table class="table table-striped ">
+            <tr>
+                <td>Name</td>
+                <td>Description</td>
+                <td>Category</td>
+                <td>Price</td>
+                <td>Actions</td>
+            </tr>
+            @if (@Model != null)
+            {
+                foreach (var prod in @Model)
+                {
+
+                <tr>
+                    <td>@prod.Name</td>
+                    <td>@prod.Description</td>
+                    <td>@prod.Category.Name</td>
+                    <td>@prod.Price</td>
+                    <td>
+                        <button class="Buy" data-id="@prod.ID">Buy</button>
+                    </td>
+                </tr>
+                }
+            }
+            else
+            {
+                <h1>NO Item In Cart</h1>
+            }
+        </table>
+    </div>
+    <script>
+       
+    </script>
